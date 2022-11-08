@@ -21,5 +21,15 @@ namespace Unit_2
                 else timeSinceLastShot += Time.deltaTime;
             }
         }
+        private void OnTriggerEnter(Collider other)
+        {
+            bool isProj = other.gameObject.TryGetComponent<Projectile>(out Projectile proj);
+            if (isProj && proj.owner.gameObject.CompareTag("Player"))
+            {
+                Game.UpdateScore(1);
+                Destroy(gameObject);
+                Destroy(proj.gameObject);
+            }
+        }
     }
 }

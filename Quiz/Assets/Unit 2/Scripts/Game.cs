@@ -6,6 +6,9 @@ namespace Unit_2
 {
     public class Game : MonoBehaviour
     {
+        public static Camera cam;
+        public static Mesh cylinder;
+
         public static Vector3 extents = new Vector3(9, 0, 9);
 
         private static TextMeshProUGUI scoreHud;
@@ -21,6 +24,12 @@ namespace Unit_2
 
         private void Awake()
         {
+            // Get cylinder mesh.
+            var m = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            m.transform.position = Vector3.down * 96f;
+            cylinder = m.GetComponent<MeshFilter>().mesh;
+
+            cam = GameObject.Find("Main Camera").GetComponent<Camera>();
             scoreHud = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
             timerHud = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
             UpdateScore();
@@ -68,7 +77,8 @@ namespace Unit_2
         public static GameObject Spawn<T>(string name, Vector3 pos, Character owner = null) where T : MonoBehaviour
         {
             // Create Object & Components.
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            GameObject obj;
+            obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             obj.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Materials/{name}");
             obj.GetComponent<Collider>().isTrigger = true;
             obj.AddComponent<Rigidbody>().isKinematic = true;
@@ -79,7 +89,9 @@ namespace Unit_2
             obj.transform.position = pos;
             if(component is Enemy enemy)
             {
+                obj.GetComponent<MeshFilter>().mesh = cylinder;
                 enemy.tag = "enemy";
+
                 if(name == "Black")
                 {
                     enemy.fireRate = 1.5f;
@@ -96,6 +108,7 @@ namespace Unit_2
                 proj.transform.position += obj.transform.forward * 1;
                 if(name == "Orange")
                 {
+                    proj.tag = "enemy";
                     proj.transform.localScale = Vector3.one / 2;
                     proj.transform.eulerAngles = Vector3.back;
                     proj.wishDir = Vector3.back;
@@ -103,6 +116,7 @@ namespace Unit_2
                 }
                 else if(name == "Metal")
                 {
+                    proj.tag = "Player";
                     proj.wishDir = Vector3.forward;
                     proj.owner = owner;
                 }
