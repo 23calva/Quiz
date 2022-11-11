@@ -23,7 +23,8 @@ namespace Unit_2
             transform.position = new Vector3(xPos, transform.position.y, zPos);
 
             //wpnRechargeProgress.transform.position += 450 * Time.fixedDeltaTime * wishDir;
-            var pos = Game.cam.WorldToScreenPoint(transform.position) + Vector3.up * 60;
+            var pos = Game.cam.WorldToScreenPoint(transform.position);
+            pos.y = wpnRechargeProgress.transform.position.y;
             wpnRechargeProgress.transform.position = pos;
         }
         private void Update()
